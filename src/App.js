@@ -50,6 +50,7 @@ class Killboard extends Component {
               <th>Killing blow</th>
               <th>Location</th>
               <th></th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -70,6 +71,12 @@ class Kill extends Component {
         <td><strong>{this.props.victimAgent}</strong><br />{this.props.victimCorporation}</td>
         <td><strong>{this.props.attackerAgent}</strong><br />{this.props.attackerCorporation}</td>
         <td>{this.props.location}</td>
+        <td>
+          <span className="icon">
+            <i className="fas fa-users"></i> 
+          </span>
+          <span style={{marginLeft: '0.25rem'}}>{this.props.attackerCount}</span>
+        </td>
         <td>{this.props.date}</td>
       </tr>
     );
@@ -125,6 +132,7 @@ class App extends Component {
                   return '';
                 })
               }
+              attackerCount={kill._embedded.attackers.length}
               location={kill._embedded.zone.name} 
               date={kill.date}
             />
