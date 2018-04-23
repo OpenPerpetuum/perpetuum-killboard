@@ -1,5 +1,11 @@
 import React, { Component } from 'react';
+import {
+  BrowserRouter as Router,
+  Route,
+  Link,
+} from 'react-router-dom';
 import { apiUrl } from './config';
+import Victim from './Victim';
 var httpBuildQuery = require('http-build-query');
 
 class HeroSection extends Component {
@@ -9,7 +15,9 @@ class HeroSection extends Component {
         <div className="hero-body">
           <div className="container">
             <h1 className="title">
-              Open Perpetuum Killboard
+              <Link to="/">
+                Open Perpetuum Killboard
+              </Link>
             </h1>
             <h2 className="subtitle">
               Pre-alpha!
@@ -37,56 +45,11 @@ class FooterSection extends Component {
   }
 }
 
-class Killboard extends Component {
-  render() {
-    return (
-      <div style={{overflow: 'auto', overflowY: 'hidden'}}>
-        <table className="table is-striped is-fullwidth">
-          <thead>
-            <tr>
-              <th></th>
-              <th>Robot</th>
-              <th>Victim</th>
-              <th>Killing blow</th>
-              <th>Location</th>
-              <th></th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {this.props.kills}
-          </tbody>
-        </table>
-      </div>
-    );
-  }
-}
-
-class Kill extends Component {
-  render() {
-    return (
-      <tr>
-        <td></td>
-        <td>{this.props.victimRobot}</td>
-        <td><strong>{this.props.victimAgent}</strong><br />{this.props.victimCorporation}</td>
-        <td><strong>{this.props.attackerAgent}</strong><br />{this.props.attackerCorporation}</td>
-        <td>{this.props.location}</td>
-        <td>
-          <span className="icon">
-            <i className="fas fa-users"></i> 
-          </span>
-          <span style={{marginLeft: '0.25rem'}}>{this.props.attackerCount}</span>
-        </td>
-        <td>{this.props.date}</td>
-      </tr>
-    );
-  }
-}
-
-class App extends Component {
+class KillBoard extends Component {
   state = {
     'kills': [],
   };
+
   componentDidMount() {
     var searchParams = {
       'order-by': [
@@ -111,8 +74,9 @@ class App extends Component {
       this.setState({
         'kills': json._embedded.kill.map(function(kill) {
           return (
-            <Kill 
+            <Victim 
               key={kill.id}
+              killId={kill.id}
               victimRobot={kill._embedded.robot.name}
               victimAgent={kill._embedded.agent.name} 
               victimCorporation={kill._embedded.corporation.name}
@@ -133,7 +97,7 @@ class App extends Component {
                 })
               }
               attackerCount={kill._embedded.attackers.length}
-              location={kill._embedded.zone.name} 
+              zone={kill._embedded.zone.name} 
               date={kill.date}
             />
           );
@@ -144,15 +108,205 @@ class App extends Component {
 
   render() {
     return (
+      <Victims kills={this.state.kills} />
+    );
+  }
+}
+
+class KillDetail extends Component {
+  state = {
+    'date': null,
+    'damageReceived': null,
+    'agent': {
+      'name': null,
+    },
+    'corporation': {
+      'name': null,
+    },
+    'robot': {
+      'name': null,
+    },
+    'zone': {
+      'id': null,
+    },
+    'attackers': [],
+  };
+
+  componentDidMount() {
+    fetch(new URL('/killboard/kill/' + this.props.match.params.killId, apiUrl), {
+      method: 'GET',
+      headers: new Headers({
+        "Accept": "application/*+json",
+      }),
+    })
+    .then(response => {
+      return response.json();
+    })
+    .then(json => {
+      this.setState({
+        'date': json.date,
+        'damageReceived': json.damageReceived,
+        'agent': json._embedded.agent,
+        'corporation': json._embedded.corporation,
+        'robot': json._embedded.robot,
+        'zone': json._embedded.zone,
+        'attackers': json._embedded.attackers.map(function(attacker) {
+          return (
+            <Attacker
+              key={attacker.id}
+              {...attacker}
+              totalDamageDealt={json.damageReceived}
+              agent={attacker._embedded.agent}
+              robot={attacker._embedded.robot} 
+              corporation={attacker._embedded.corporation}
+            />
+          );
+        }),
+      });
+    });
+  }
+
+  render() {
+    return (
       <div>
-        <HeroSection />
-        <section className="section">
-          <div className="container">
-            <Killboard kills={this.state.kills} />
+        <div className="columns">
+          <div className="column">
+            <div className="has-text-centered" style={{marginBottom: '2em'}}>
+              <div>
+                <p className="heading">Agent</p>
+                <p className="subtitle">{this.state.agent.name}</p>
+              </div>
+            </div>
+            <div className="has-text-centered" style={{marginBottom: '2em'}}>
+              <div>
+                <p className="heading">Corporation</p>
+                <p className="subtitle">{this.state.corporation.name}</p>
+              </div>
+            </div>
+            <div className="has-text-centered" style={{marginBottom: '2em'}}>
+              <div>
+                <p className="heading">Robot</p>
+                <p className="subtitle">{this.state.robot.name}</p>
+              </div>
+            </div>
           </div>
-        </section>
-        <FooterSection />
+          <div className="column">
+            <div className="has-text-centered" style={{marginBottom: '2em'}}>
+              <div>
+                <p className="heading">Zone</p>
+                <p className="subtitle">{this.state.zone.name}</p>
+              </div>
+            </div>
+            <div className="has-text-centered" style={{marginBottom: '2em'}}>
+              <div>
+                <p className="heading">Date</p>
+                <p className="subtitle">{this.state.date}</p>
+              </div>
+            </div>
+            <div className="has-text-centered" style={{marginBottom: '2em'}}>
+              <div>
+                <p className="heading">Damage received</p>
+                <p className="subtitle">{Math.round(this.state.damageReceived * 100) / 100}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <h1 className="title is-4">
+            Attackers
+          </h1>
+          <div>
+            <Attackers attackers={this.state.attackers} />
+          </div>
+        </div>
       </div>
+    );
+  }
+}
+
+class Attackers extends Component {
+  render() {
+    return (
+      <div style={{overflow: 'auto', overflowY: 'hidden'}}>
+        <table className="table is-striped is-fullwidth">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Agent</th>
+              <th>Robot</th>
+              <th>Damage dealt</th>
+              <th></th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {this.props.attackers}
+          </tbody>
+        </table>
+      </div>
+    );
+  }
+}
+
+class Attacker extends Component {
+  render() {
+    return (
+      <tr className="attacker">
+        <td></td>
+        <td><strong>{this.props.agent.name}</strong><br />{this.props.corporation.name}</td>
+        <td><strong>{this.props.robot.name}</strong><br /></td>
+        <td><strong>{Math.round(this.props.damageDealt * 100) / 100}</strong><br />{Math.round(this.props.damageDealt / this.props.totalDamageDealt * 10000) / 100}%</td>
+        <td></td>
+        <td>
+          {this.props.hasKillingBlow &&
+            <span className="tag is-success">Killing blow</span>
+          }
+        </td>
+      </tr>
+    );
+  }
+}
+
+class Victims extends Component {
+  render() {
+    return (
+      <div style={{overflow: 'auto', overflowY: 'hidden'}}>
+        <table className="table is-striped is-fullwidth">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Robot</th>
+              <th>Victim</th>
+              <th>Killing blow</th>
+              <th>Location</th>
+              <th></th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {this.props.kills}
+          </tbody>
+        </table>
+      </div>
+    );
+  }
+}
+
+class App extends Component {
+  render() {
+    return (
+      <Router>
+        <div>
+          <HeroSection />
+          <section className="section">
+            <div className="container">
+              <Route exact path="/" component={KillBoard} />
+              <Route exact path="/kill/:killId" component={KillDetail} />
+            </div>
+          </section>
+          <FooterSection />
+        </div>
+      </Router>
     );
   }
 }
