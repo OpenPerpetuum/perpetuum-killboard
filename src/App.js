@@ -20,7 +20,7 @@ class HeroSection extends Component {
               </Link>
             </h1>
             <h2 className="subtitle">
-              Pre-alpha!
+              v0.2
             </h2>
           </div>
         </div>
@@ -46,11 +46,40 @@ class FooterSection extends Component {
 }
 
 class KillBoard extends Component {
-  state = {
-    'kills': [],
-  };
+  constructor(props) {
+    super(props);
+    this.handleClickNext = this.handleClickNext.bind(this);
+    this.handleClickPrev = this.handleClickPrev.bind(this);
+    this.handleClickFirst = this.handleClickFirst.bind(this);
+    this.handleClickLast = this.handleClickLast.bind(this);
+    this.populateTableFromAPI = this.populateTableFromAPI.bind(this);
+    this.state = {
+      'kills': [],
+      'page': this.state!=null ? this.state.page : 1,
+      'prev': this.state!=null ? this.state.page : 1,
+      'page_count': this.state!=null ? this.state.page_count : 1
+    };
+  }
 
-  componentDidMount() {
+
+  handleClickNext(){
+    this.populateTableFromAPI(this.state.next);
+  }
+
+  handleClickPrev(){
+    this.populateTableFromAPI(this.state.prev);
+  }
+
+  handleClickFirst(){
+    this.populateTableFromAPI(1);
+  }
+
+  handleClickLast(){
+    this.populateTableFromAPI(this.state.page_count);
+  }
+
+
+  populateTableFromAPI(pageNum) {
     var searchParams = {
       'order-by': [
         {
@@ -59,6 +88,7 @@ class KillBoard extends Component {
           'direction': 'desc',
         },
       ],
+      'page' : pageNum
     };
     
     fetch(new URL('/killboard/kill?'+httpBuildQuery(searchParams), apiUrl), {
@@ -72,6 +102,10 @@ class KillBoard extends Component {
     })
     .then(json => {
       this.setState({
+        'page' : json.page,
+        'next' : json.page+1,
+        'prev' : json.page-1,
+        'page_count': json.page_count,
         'kills': json._embedded.kill.map(function(kill) {
           return (
             <Victim 
@@ -106,9 +140,21 @@ class KillBoard extends Component {
     });
   }
 
+  componentDidMount() {
+    this.populateTableFromAPI(this.state.page);
+  }
+
   render() {
     return (
-      <Victims kills={this.state.kills} />
+      <div>
+        <Victims kills={this.state.kills} />
+
+        <button onClick={this.handleClickFirst}>First</button>
+        {this.state.page>1 && <button onClick={this.handleClickPrev}>Prev</button>}
+        {this.state.page<this.state.page_count && <button onClick={this.handleClickNext}>Next</button>}
+        <button onClick={this.handleClickLast}>Last</button>
+
+      </div>
     );
   }
 }
