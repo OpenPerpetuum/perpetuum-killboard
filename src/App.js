@@ -6,6 +6,7 @@ import {
 } from 'react-router-dom';
 import { apiUrl } from './config';
 import Victim from './Victim';
+import loadingGif from './images/loading.gif';
 var httpBuildQuery = require('http-build-query');
 
 class HeroSection extends Component {
@@ -57,10 +58,10 @@ class KillBoard extends Component {
       'kills': [],
       'page': this.state!=null ? this.state.page : 1,
       'prev': this.state!=null ? this.state.page : 1,
-      'page_count': this.state!=null ? this.state.page_count : 1
+      'page_count': this.state!=null ? this.state.page_count : 1,
+      'loaded': false
     };
   }
-
 
   handleClickNext(){
     this.populateTableFromAPI(this.state.next);
@@ -80,6 +81,7 @@ class KillBoard extends Component {
 
 
   populateTableFromAPI(pageNum) {
+    this.setState({'loaded':false});
     var searchParams = {
       'order-by': [
         {
@@ -102,6 +104,7 @@ class KillBoard extends Component {
     })
     .then(json => {
       this.setState({
+        'loaded': true,
         'page' : json.page,
         'next' : json.page+1,
         'prev' : json.page-1,
@@ -145,14 +148,22 @@ class KillBoard extends Component {
   }
 
   render() {
+    const loaded = this.state.loaded;
+    var classes = "button is-large is-dark";
+    var imgClass = "is-invisible";
+    if(!loaded){
+      imgClass = "";
+    }
     return (
       <div>
         <Victims kills={this.state.kills} />
-
-        <button onClick={this.handleClickFirst}>First</button>
-        {this.state.page>1 && <button onClick={this.handleClickPrev}>Prev</button>}
-        {this.state.page<this.state.page_count && <button onClick={this.handleClickNext}>Next</button>}
-        <button onClick={this.handleClickLast}>Last</button>
+        <div class="buttons">
+          <a disabled={!loaded} class={classes} onClick={this.handleClickFirst}>First</a>
+          {this.state.page>1 &&  <a disabled={!loaded} class={classes} onClick={this.handleClickPrev}>Prev</a>}
+          {this.state.page<this.state.page_count &&  <a disabled={!loaded} class={classes} onClick={this.handleClickNext}>Next</a>}
+          <a disabled={!loaded} class={classes} onClick={this.handleClickLast}>Last</a>
+          <img class={imgClass} src={loadingGif}/>
+        </div>
 
       </div>
     );
