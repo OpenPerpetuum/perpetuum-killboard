@@ -7,6 +7,7 @@ import {
 import { apiUrl } from './config';
 import Victim from './Victim';
 import loadingGif from './images/loading.gif';
+import resolveIcon from './iconResolve';
 var httpBuildQuery = require('http-build-query');
 
 class HeroSection extends Component {
@@ -162,7 +163,7 @@ class KillBoard extends Component {
           {this.state.page>1 &&  <a disabled={!loaded} class={classes} onClick={this.handleClickPrev}>Prev</a>}
           {this.state.page<this.state.page_count &&  <a disabled={!loaded} class={classes} onClick={this.handleClickNext}>Next</a>}
           <a disabled={!loaded} class={classes} onClick={this.handleClickLast}>Last</a>
-          <img class={imgClass} src={loadingGif}/>
+          <img class={imgClass} src={loadingGif} alt="loading..."/>
         </div>
 
       </div>
@@ -289,6 +290,7 @@ class Attackers extends Component {
           <thead>
             <tr>
               <th></th>
+              <th></th>
               <th>Agent</th>
               <th>Robot</th>
               <th>Damage dealt</th>
@@ -310,6 +312,7 @@ class Attacker extends Component {
     return (
       <tr className="attacker">
         <td></td>
+        <td><img class="bot-icon" src={resolveIcon(this.props.robot.name)} alt="robot-icon"/></td>
         <td><strong>{this.props.agent.name}</strong><br />{this.props.corporation.name}</td>
         <td><strong>{this.props.robot.name}</strong><br /></td>
         <td><strong>{Math.round(this.props.damageDealt * 100) / 100}</strong><br />{Math.round(this.props.damageDealt / this.props.totalDamageDealt * 10000) / 100}%</td>
@@ -331,6 +334,7 @@ class Victims extends Component {
         <table className="table is-striped is-fullwidth">
           <thead>
             <tr>
+              <th></th>
               <th></th>
               <th>Robot</th>
               <th>Victim</th>

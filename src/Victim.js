@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import './Victim.css';
+import './index.css';
+import resolveIcon from './iconResolve'
+
+
 
 class Victim extends Component {
   handleClick = () => {
@@ -8,12 +12,10 @@ class Victim extends Component {
   }
 
   handleMouseEnter = () => {
-    console.log("enter");
     this.setState({ hover: true }); 
   }
 
   handleMouseLeave = () => {
-    console.log("leave");
     this.setState({ hover: false }); 
   }
 
@@ -29,6 +31,7 @@ class Victim extends Component {
     return (
       <tr id="row" className={this.handleRenderClass()} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleMouseLeave} onClick={this.handleClick} style={{'cursor': 'pointer'}}>
         <td></td>
+        <td><img class="bot-icon" src={resolveIcon(this.props.victimRobot)} alt="robot-icon"/></td>
         <td>{this.props.victimRobot}</td>
         <td><strong>{this.props.victimAgent}</strong><br />{this.props.victimCorporation}</td>
         <td><strong>{this.props.attackerAgent}</strong><br />{this.props.attackerCorporation}</td>
