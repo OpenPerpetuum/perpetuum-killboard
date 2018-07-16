@@ -158,12 +158,12 @@ class KillBoard extends Component {
     return (
       <div>
         <Victims kills={this.state.kills} />
-        <div class="buttons">
-          <a disabled={!loaded} class={classes} onClick={this.handleClickFirst}>First</a>
-          {this.state.page>1 &&  <a disabled={!loaded} class={classes} onClick={this.handleClickPrev}>Prev</a>}
-          {this.state.page<this.state.page_count &&  <a disabled={!loaded} class={classes} onClick={this.handleClickNext}>Next</a>}
-          <a disabled={!loaded} class={classes} onClick={this.handleClickLast}>Last</a>
-          <img class={imgClass} src={loadingGif} alt="loading..."/>
+        <div className="buttons">
+          <a disabled={!loaded} className={classes} onClick={this.handleClickFirst}>First</a>
+          {this.state.page>1 &&  <a disabled={!loaded} className={classes} onClick={this.handleClickPrev}>Prev</a>}
+          {this.state.page<this.state.page_count &&  <a disabled={!loaded} className={classes} onClick={this.handleClickNext}>Next</a>}
+          <a disabled={!loaded} className={classes} onClick={this.handleClickLast}>Last</a>
+          <img className={imgClass} src={loadingGif} alt="loading..."/>
         </div>
 
       </div>
@@ -312,7 +312,7 @@ class Attacker extends Component {
     return (
       <tr className="attacker">
         <td></td>
-        <td><img class="bot-icon" src={resolveIcon(this.props.robot.name)} alt="robot-icon"/></td>
+        <td><img className="bot-icon" src={resolveIcon(this.props.robot.name)} alt="robot-icon"/></td>
         <td><strong>{this.props.agent.name}</strong><br />{this.props.corporation.name}</td>
         <td><strong>{this.props.robot.name}</strong><br /></td>
         <td><strong>{Math.round(this.props.damageDealt * 100) / 100}</strong><br />{Math.round(this.props.damageDealt / this.props.totalDamageDealt * 10000) / 100}%</td>
