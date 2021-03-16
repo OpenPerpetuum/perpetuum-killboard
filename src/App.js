@@ -6,6 +6,8 @@ import {
 } from 'react-router-dom';
 import { apiUrl } from './config';
 import Victim from './Victim';
+import loadingGif from './images/loading.gif';
+import resolveIcon from './iconResolve';
 var httpBuildQuery = require('http-build-query');
 
 class HeroSection extends Component {
@@ -20,7 +22,7 @@ class HeroSection extends Component {
               </Link>
             </h1>
             <h2 className="subtitle">
-              Pre-alpha!
+              v0.2
             </h2>
           </div>
         </div>
@@ -46,11 +48,41 @@ class FooterSection extends Component {
 }
 
 class KillBoard extends Component {
-  state = {
-    'kills': [],
-  };
+  constructor(props) {
+    super(props);
+    this.handleClickNext = this.handleClickNext.bind(this);
+    this.handleClickPrev = this.handleClickPrev.bind(this);
+    this.handleClickFirst = this.handleClickFirst.bind(this);
+    this.handleClickLast = this.handleClickLast.bind(this);
+    this.populateTableFromAPI = this.populateTableFromAPI.bind(this);
+    this.state = {
+      'kills': [],
+      'page': this.state!=null ? this.state.page : 1,
+      'prev': this.state!=null ? this.state.page : 1,
+      'page_count': this.state!=null ? this.state.page_count : 1,
+      'loaded': false
+    };
+  }
 
-  componentDidMount() {
+  handleClickNext(){
+    this.populateTableFromAPI(this.state.next);
+  }
+
+  handleClickPrev(){
+    this.populateTableFromAPI(this.state.prev);
+  }
+
+  handleClickFirst(){
+    this.populateTableFromAPI(1);
+  }
+
+  handleClickLast(){
+    this.populateTableFromAPI(this.state.page_count);
+  }
+
+
+  populateTableFromAPI(pageNum) {
+    this.setState({'loaded':false});
     var searchParams = {
       'order-by': [
         {
@@ -59,6 +91,7 @@ class KillBoard extends Component {
           'direction': 'desc',
         },
       ],
+      'page' : pageNum
     };
     
     fetch(new URL('/killboard/kill?'+httpBuildQuery(searchParams), apiUrl), {
@@ -72,6 +105,11 @@ class KillBoard extends Component {
     })
     .then(json => {
       this.setState({
+        'loaded': true,
+        'page' : json.page,
+        'next' : json.page+1,
+        'prev' : json.page-1,
+        'page_count': json.page_count,
         'kills': json._embedded.kill.map(function(kill) {
           return (
             <Victim 
@@ -106,9 +144,29 @@ class KillBoard extends Component {
     });
   }
 
+  componentDidMount() {
+    this.populateTableFromAPI(this.state.page);
+  }
+
   render() {
+    const loaded = this.state.loaded;
+    var classes = "button is-large is-dark";
+    var imgClass = "is-invisible";
+    if(!loaded){
+      imgClass = "";
+    }
     return (
-      <Victims kills={this.state.kills} />
+      <div>
+        <Victims kills={this.state.kills} />
+        <div className="buttons">
+          <a disabled={!loaded} className={classes} onClick={this.handleClickFirst}>First</a>
+          {this.state.page>1 &&  <a disabled={!loaded} className={classes} onClick={this.handleClickPrev}>Prev</a>}
+          {this.state.page<this.state.page_count &&  <a disabled={!loaded} className={classes} onClick={this.handleClickNext}>Next</a>}
+          <a disabled={!loaded} className={classes} onClick={this.handleClickLast}>Last</a>
+          <img className={imgClass} src={loadingGif} alt="loading..."/>
+        </div>
+
+      </div>
     );
   }
 }
@@ -232,6 +290,7 @@ class Attackers extends Component {
           <thead>
             <tr>
               <th></th>
+              <th></th>
               <th>Agent</th>
               <th>Robot</th>
               <th>Damage dealt</th>
@@ -253,6 +312,7 @@ class Attacker extends Component {
     return (
       <tr className="attacker">
         <td></td>
+        <td><img className="bot-icon" src={resolveIcon(this.props.robot.name)} alt="robot-icon"/></td>
         <td><strong>{this.props.agent.name}</strong><br />{this.props.corporation.name}</td>
         <td><strong>{this.props.robot.name}</strong><br /></td>
         <td><strong>{Math.round(this.props.damageDealt * 100) / 100}</strong><br />{Math.round(this.props.damageDealt / this.props.totalDamageDealt * 10000) / 100}%</td>
@@ -274,6 +334,7 @@ class Victims extends Component {
         <table className="table is-striped is-fullwidth">
           <thead>
             <tr>
+              <th></th>
               <th></th>
               <th>Robot</th>
               <th>Victim</th>
