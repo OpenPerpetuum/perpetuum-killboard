@@ -325,8 +325,6 @@ class Attacker extends Component {
           {this.props.sensorSurpressions > 0 && <span><strong>Sensor Surpressions:</strong>  {this.props.sensorSurpressions} <br /></span>}
           {this.props.totalEcmAttempts > 0 && <span><strong>ECM Attempts:</strong>  {this.props.totalEcmAttempts}<br /> </span>}
           </td>
-        <td> </td>
-        <td> </td>
         <td></td>
       </tr>
     );
