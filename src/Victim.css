@@ -1,3 +1,21 @@
+thead {
+	background-color: #111;
+	color: white;
+}
+
+.is-striped:nth-child(even){
+	background-color: #222;
+}
+
+#row{  
+	background-color: #111;
+	color: white;
+}
+
 #row.victim-hover{
-  background-color:#DEDEDE;
+  background-color:#333;
+}
+
+strong{
+	color: white;
 }

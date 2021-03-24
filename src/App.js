@@ -310,7 +310,7 @@ class Attackers extends Component {
 class Attacker extends Component {
   render() {
     return (
-      <tr className="attacker">
+      <tr id="row" className="attacker">
         <td></td>
         <td><img className="bot-icon" src={resolveIcon(this.props.robot.name)} alt="robot-icon"/></td>
         <td><strong>{this.props.agent.name}</strong><br />{this.props.corporation.name}</td>
@@ -333,7 +333,7 @@ class Victims extends Component {
       <div style={{overflow: 'auto', overflowY: 'hidden'}}>
         <table className="table is-striped is-fullwidth">
           <thead>
-            <tr>
+            <tr id="row">
               <th></th>
               <th></th>
               <th>Robot</th>

@@ -2,10 +2,33 @@ body {
   margin: 0;
   padding: 0;
   font-family: sans-serif;
+  background-color: #111;
+  color: white;
+}
+
+.table thead tr th {
+  color: white;
+}
+
+p {
+	color: white;
+}
+
+.title, .subtitle{
+	color: white;
+}
+
+.footer{
+  background-color: #222;
+  color: white;
 }
 
 .bot-icon{
 	max-width: 72px;
 	width: 10vh;
 	min-width: 42px
+}
+
+.is-striped:nth-child(even){
+	background-color: #222;
 }
