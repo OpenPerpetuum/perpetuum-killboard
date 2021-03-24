@@ -29,7 +29,7 @@ class Victim extends Component {
 
   render() {
     return (
-      <tr id="row" className={this.handleRenderClass()} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleMouseLeave} onClick={this.handleClick} style={{'cursor': 'pointer'}}>
+      <tr id="row" className={this.handleRenderClass() + " dark"} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleMouseLeave} onClick={this.handleClick} style={{'cursor': 'pointer'}}>
         <td></td>
         <td><img className="bot-icon" src={resolveIcon(this.props.victimRobot)} alt="robot-icon"/></td>
         <td>{this.props.victimRobot}</td>

@@ -6,7 +6,22 @@ body {
   color: white;
 }
 
+.dark {
+  background-color: #111;
+  color: white;
+}
+
+.gray {
+  background-color: #222;
+  color: white;
+}
+
 .table thead tr th {
+  color: white;
+}
+
+tbody {
+  background-color: #111;
   color: white;
 }
 
