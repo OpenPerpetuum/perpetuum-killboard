@@ -57,32 +57,32 @@ class KillBoard extends Component {
     this.populateTableFromAPI = this.populateTableFromAPI.bind(this);
     this.state = {
       'kills': [],
-      'page': this.state!=null ? this.state.page : 1,
-      'prev': this.state!=null ? this.state.page : 1,
-      'page_count': this.state!=null ? this.state.page_count : 1,
+      'page': this.state != null ? this.state.page : 1,
+      'prev': this.state != null ? this.state.page : 1,
+      'page_count': this.state != null ? this.state.page_count : 1,
       'loaded': false
     };
   }
 
-  handleClickNext(){
+  handleClickNext() {
     this.populateTableFromAPI(this.state.next);
   }
 
-  handleClickPrev(){
+  handleClickPrev() {
     this.populateTableFromAPI(this.state.prev);
   }
 
-  handleClickFirst(){
+  handleClickFirst() {
     this.populateTableFromAPI(1);
   }
 
-  handleClickLast(){
+  handleClickLast() {
     this.populateTableFromAPI(this.state.page_count);
   }
 
 
   populateTableFromAPI(pageNum) {
-    this.setState({'loaded':false});
+    this.setState({ 'loaded': false });
     var searchParams = {
       'order-by': [
         {
@@ -91,57 +91,57 @@ class KillBoard extends Component {
           'direction': 'desc',
         },
       ],
-      'page' : pageNum
+      'page': pageNum
     };
-    
-    fetch(new URL('/killboard/kill?'+httpBuildQuery(searchParams), apiUrl), {
+
+    fetch(new URL('/killboard/kill?' + httpBuildQuery(searchParams), apiUrl), {
       method: 'GET',
       headers: new Headers({
         "Accept": "application/*+json",
       }),
     })
-    .then(response => {
-      return response.json();
-    })
-    .then(json => {
-      this.setState({
-        'loaded': true,
-        'page' : json.page,
-        'next' : json.page+1,
-        'prev' : json.page-1,
-        'page_count': json.page_count,
-        'kills': json._embedded.kill.map(function(kill) {
-          return (
-            <Victim 
-              key={kill.id}
-              killId={kill.id}
-              victimRobot={kill._embedded.robot.name}
-              victimAgent={kill._embedded.agent.name} 
-              victimCorporation={kill._embedded.corporation.name}
-              attackerAgent={
-                kill._embedded.attackers.map(function(attacker) {
-                  if (attacker.hasKillingBlow === true) {
-                    return attacker._embedded.agent.name;
-                  }
-                  return '';
-                })
-              }
-              attackerCorporation={
-                kill._embedded.attackers.map(function(attacker) {
-                  if (attacker.hasKillingBlow === true) {
-                    return attacker._embedded.corporation.name;
-                  }
-                  return '';
-                })
-              }
-              attackerCount={kill._embedded.attackers.length}
-              zone={kill._embedded.zone.name} 
-              date={kill.date}
-            />
-          );
-        }),
+      .then(response => {
+        return response.json();
+      })
+      .then(json => {
+        this.setState({
+          'loaded': true,
+          'page': json.page,
+          'next': json.page + 1,
+          'prev': json.page - 1,
+          'page_count': json.page_count,
+          'kills': json._embedded.kill.map(function (kill) {
+            return (
+              <Victim
+                key={kill.id}
+                killId={kill.id}
+                victimRobot={kill._embedded.robot.name}
+                victimAgent={kill._embedded.agent.name}
+                victimCorporation={kill._embedded.corporation.name}
+                attackerAgent={
+                  kill._embedded.attackers.map(function (attacker) {
+                    if (attacker.hasKillingBlow === true) {
+                      return attacker._embedded.agent.name;
+                    }
+                    return '';
+                  })
+                }
+                attackerCorporation={
+                  kill._embedded.attackers.map(function (attacker) {
+                    if (attacker.hasKillingBlow === true) {
+                      return attacker._embedded.corporation.name;
+                    }
+                    return '';
+                  })
+                }
+                attackerCount={kill._embedded.attackers.length}
+                zone={kill._embedded.zone.name}
+                date={kill.date}
+              />
+            );
+          }),
+        });
       });
-    });
   }
 
   componentDidMount() {
@@ -152,7 +152,7 @@ class KillBoard extends Component {
     const loaded = this.state.loaded;
     var classes = "button is-large is-dark";
     var imgClass = "is-invisible";
-    if(!loaded){
+    if (!loaded) {
       imgClass = "";
     }
     return (
@@ -160,10 +160,10 @@ class KillBoard extends Component {
         <Victims kills={this.state.kills} />
         <div className="buttons">
           <a disabled={!loaded} className={classes} onClick={this.handleClickFirst}>First</a>
-          {this.state.page>1 &&  <a disabled={!loaded} className={classes} onClick={this.handleClickPrev}>Prev</a>}
-          {this.state.page<this.state.page_count &&  <a disabled={!loaded} className={classes} onClick={this.handleClickNext}>Next</a>}
+          {this.state.page > 1 && <a disabled={!loaded} className={classes} onClick={this.handleClickPrev}>Prev</a>}
+          {this.state.page < this.state.page_count && <a disabled={!loaded} className={classes} onClick={this.handleClickNext}>Next</a>}
           <a disabled={!loaded} className={classes} onClick={this.handleClickLast}>Last</a>
-          <img className={imgClass} src={loadingGif} alt="loading..."/>
+          <img className={imgClass} src={loadingGif} alt="loading..." />
         </div>
 
       </div>
@@ -197,34 +197,34 @@ class KillDetail extends Component {
         "Accept": "application/*+json",
       }),
     })
-    .then(response => {
-      return response.json();
-    })
-    .then(json => {
-      this.setState({
-        'date': json.date,
-        'damageReceived': json.damageReceived,
-        'agent': json._embedded.agent,
-        'corporation': json._embedded.corporation,
-        'robot': json._embedded.robot,
-        'zone': json._embedded.zone,
-        'attackers': json._embedded.attackers.map(function(attacker) {
-          return (
-            <Attacker
-              key={attacker.id}
-              {...attacker}
-              totalDamageDealt={json.damageReceived}
-              agent={attacker._embedded.agent}
-              robot={attacker._embedded.robot} 
-              corporation={attacker._embedded.corporation}
-              totalEcmAttempts={attacker.totalEcmAttempts}
-              energyDrain={attacker.energyDispersed}
-              sensorSurpressions={attacker.sensorSurpressions}
-            />
-          );
-        }),
+      .then(response => {
+        return response.json();
+      })
+      .then(json => {
+        this.setState({
+          'date': json.date,
+          'damageReceived': json.damageReceived,
+          'agent': json._embedded.agent,
+          'corporation': json._embedded.corporation,
+          'robot': json._embedded.robot,
+          'zone': json._embedded.zone,
+          'attackers': json._embedded.attackers.map(function (attacker) {
+            return (
+              <Attacker
+                key={attacker.id}
+                {...attacker}
+                totalDamageDealt={json.damageReceived}
+                agent={attacker._embedded.agent}
+                robot={attacker._embedded.robot}
+                corporation={attacker._embedded.corporation}
+                totalEcmAttempts={attacker.totalEcmAttempts}
+                energyDrain={attacker.energyDispersed}
+                sensorSurpressions={attacker.sensorSurpressions}
+              />
+            );
+          }),
+        });
       });
-    });
   }
 
   render() {
@@ -232,19 +232,19 @@ class KillDetail extends Component {
       <div>
         <div className="columns">
           <div className="column">
-            <div className="has-text-centered" style={{marginBottom: '2em'}}>
+            <div className="has-text-centered" style={{ marginBottom: '2em' }}>
               <div>
                 <p className="heading">Agent</p>
                 <p className="subtitle">{this.state.agent.name}</p>
               </div>
             </div>
-            <div className="has-text-centered" style={{marginBottom: '2em'}}>
+            <div className="has-text-centered" style={{ marginBottom: '2em' }}>
               <div>
                 <p className="heading">Corporation</p>
                 <p className="subtitle">{this.state.corporation.name}</p>
               </div>
             </div>
-            <div className="has-text-centered" style={{marginBottom: '2em'}}>
+            <div className="has-text-centered" style={{ marginBottom: '2em' }}>
               <div>
                 <p className="heading">Robot</p>
                 <p className="subtitle">{this.state.robot.name}</p>
@@ -252,19 +252,19 @@ class KillDetail extends Component {
             </div>
           </div>
           <div className="column">
-            <div className="has-text-centered" style={{marginBottom: '2em'}}>
+            <div className="has-text-centered" style={{ marginBottom: '2em' }}>
               <div>
                 <p className="heading">Zone</p>
                 <p className="subtitle">{this.state.zone.name}</p>
               </div>
             </div>
-            <div className="has-text-centered" style={{marginBottom: '2em'}}>
+            <div className="has-text-centered" style={{ marginBottom: '2em' }}>
               <div>
                 <p className="heading">Date</p>
                 <p className="subtitle">{this.state.date}</p>
               </div>
             </div>
-            <div className="has-text-centered" style={{marginBottom: '2em'}}>
+            <div className="has-text-centered" style={{ marginBottom: '2em' }}>
               <div>
                 <p className="heading">Damage received</p>
                 <p className="subtitle">{Math.round(this.state.damageReceived * 100) / 100}</p>
@@ -288,7 +288,7 @@ class KillDetail extends Component {
 class Attackers extends Component {
   render() {
     return (
-      <div style={{overflow: 'auto', overflowY: 'hidden'}}>
+      <div style={{ overflow: 'auto', overflowY: 'hidden' }}>
         <table className="table is-striped is-fullwidth">
           <thead>
             <tr>
@@ -316,15 +316,15 @@ class Attacker extends Component {
     return (
       <tr id="row" className="attacker">
         <td></td>
-        <td><img className="bot-icon" src={resolveIcon(this.props.robot.name)} alt="robot-icon"/></td>
+        <td><img className="bot-icon" src={resolveIcon(this.props.robot.name)} alt="robot-icon" /></td>
         <td><strong>{this.props.agent.name} {this.props.hasKillingBlow && <span className="tag is-danger"> Killing blow! </span>} </strong><br />{this.props.corporation.name}</td>
         <td><strong>{this.props.robot.name}</strong><br /></td>
         <td><strong>{Math.round(this.props.damageDealt * 100) / 100}</strong><br />{Math.round(this.props.damageDealt / this.props.totalDamageDealt * 10000) / 100}%</td>
         <td>
-          {this.props.energyDrain > 0 && <span><strong>Energy Drained:</strong>  {Math.round(this.props.energyDrain)} <br /></span>} 
+          {this.props.energyDrain > 0 && <span><strong>Energy Drained:</strong>  {Math.round(this.props.energyDrain)} <br /></span>}
           {this.props.sensorSurpressions > 0 && <span><strong>Sensor Surpressions:</strong>  {this.props.sensorSurpressions} <br /></span>}
           {this.props.totalEcmAttempts > 0 && <span><strong>ECM Attempts:</strong>  {this.props.totalEcmAttempts}<br /> </span>}
-          </td>
+        </td>
         <td></td>
       </tr>
     );
@@ -334,7 +334,7 @@ class Attacker extends Component {
 class Victims extends Component {
   render() {
     return (
-      <div style={{overflow: 'auto', overflowY: 'hidden'}}>
+      <div style={{ overflow: 'auto', overflowY: 'hidden' }}>
         <table className="table is-striped is-fullwidth">
           <thead>
             <tr id="row">
