@@ -297,6 +297,7 @@ class Attackers extends Component {
               <th>Agent</th>
               <th>Robot</th>
               <th>Damage dealt</th>
+              <th>EWAR</th>
               <th></th>
               <th></th>
             </tr>
