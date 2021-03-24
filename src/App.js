@@ -13,7 +13,7 @@ var httpBuildQuery = require('http-build-query');
 class HeroSection extends Component {
   render() {
     return (
-      <section className="hero is-small is-dark">
+      <section className="hero is-small is-dark gray">
         <div className="hero-body">
           <div className="container">
             <h1 className="title">
@@ -34,7 +34,7 @@ class HeroSection extends Component {
 class FooterSection extends Component {
   render() {
     return (
-      <footer className="footer">
+      <footer className="footer gray">
         <div className="container">
           <div className="content has-text-centered">
             <p>
@@ -289,7 +289,7 @@ class Attackers extends Component {
   render() {
     return (
       <div style={{ overflow: 'auto', overflowY: 'hidden' }}>
-        <table className="table is-striped is-fullwidth">
+        <table className="table is-striped is-fullwidth dark">
           <thead>
             <tr>
               <th></th>
@@ -298,7 +298,6 @@ class Attackers extends Component {
               <th>Robot</th>
               <th>Damage dealt</th>
               <th>EWAR</th>
-              <th></th>
               <th></th>
             </tr>
           </thead>
@@ -314,7 +313,7 @@ class Attackers extends Component {
 class Attacker extends Component {
   render() {
     return (
-      <tr id="row" className="attacker">
+      <tr id="row" className="attacker dark">
         <td></td>
         <td><img className="bot-icon" src={resolveIcon(this.props.robot.name)} alt="robot-icon" /></td>
         <td><strong>{this.props.agent.name} {this.props.hasKillingBlow && <span className="tag is-danger"> Killing blow! </span>} </strong><br />{this.props.corporation.name}</td>
@@ -335,7 +334,7 @@ class Victims extends Component {
   render() {
     return (
       <div style={{ overflow: 'auto', overflowY: 'hidden' }}>
-        <table className="table is-striped is-fullwidth">
+        <table className="table is-striped is-fullwidth dark">
           <thead>
             <tr id="row">
               <th></th>
@@ -364,7 +363,7 @@ class App extends Component {
         <div>
           <HeroSection />
           <section className="section">
-            <div className="container">
+            <div className="container dark">
               <Route exact path="/" component={KillBoard} />
               <Route exact path="/kill/:killId" component={KillDetail} />
             </div>
