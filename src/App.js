@@ -22,7 +22,7 @@ class HeroSection extends Component {
               </Link>
             </h1>
             <h2 className="subtitle">
-              v0.2
+              v0.3
             </h2>
           </div>
         </div>
