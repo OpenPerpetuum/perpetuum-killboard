@@ -217,6 +217,9 @@ class KillDetail extends Component {
               agent={attacker._embedded.agent}
               robot={attacker._embedded.robot} 
               corporation={attacker._embedded.corporation}
+              totalEcmAttempts={attacker.totalEcmAttempts}
+              energyDrain={attacker.energyDispersed}
+              sensorSurpressions={attacker.sensorSurpressions}
             />
           );
         }),
