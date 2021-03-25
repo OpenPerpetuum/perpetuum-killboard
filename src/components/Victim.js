@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
-import './Victim.css';
-import './index.css';
-import resolveIcon from './iconResolve'
-
-
+import '../css/Victim.css';
+import '../css/index.css';
+import resolveIcon from '../iconResolve'
 
 class Victim extends Component {
   handleClick = () => {
