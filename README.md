@@ -1,6 +1,6 @@
 # OpenPerpetuum Killboard
 
-A [React.js](https://reactjs.org/) app utilizing  [Bulma.css](https://bulma.io/) framework to display information about the kill events happening in [OpenPerpetuum](https://openperpetuum.com/) !
+A [React.js](https://reactjs.org/) app utilizing [Bulma.css](https://bulma.io/) framework to display information about the kill events happening in [OpenPerpetuum](https://openperpetuum.com/)!
 
 
 ## Get started
