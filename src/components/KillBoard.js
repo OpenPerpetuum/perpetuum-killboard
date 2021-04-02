@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import Victim from './Victim';
 import Victims from './Victims';
-import loadingGif from '../images/loading.gif';
 import { apiUrl } from '../config';
 
 var httpBuildQuery = require('http-build-query');
@@ -122,7 +121,7 @@ class KillBoard extends Component {
             {this.state.page > 1 && <a disabled={!loaded} className={classes} onClick={this.handleClickPrev}>Prev</a>}
             {this.state.page < this.state.page_count && <a disabled={!loaded} className={classes} onClick={this.handleClickNext}>Next</a>}
             <a disabled={!loaded} className={classes} onClick={this.handleClickLast}>Last</a>
-            <img className={imgClass} src={loadingGif} alt="loading..." />
+            <img className={imgClass} src='../images/loading.gif' alt="loading..." />
           </div>
   
         </div>
